@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Novie : " />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Novie</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/groupon/Novie">View on GitHub</a>
+
+          <h1 id="project_title">Novie</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/groupon/Novie/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/groupon/Novie/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="novie" class="anchor" href="#novie"><span class="octicon octicon-link"></span></a>Novie</h1>
+
+<p>Novie is a library desined to allow everybody to retrieve data from any RDBMS using HTTP.
+It is primarily designed to retrieve data from any star or snowflake schema and return the result dataset in JSON, CSV or XML.</p>
+
+<p>Its advanced querying system allows the user to retrieve, group, filter and sort any data exposed through Novie by using simple HTTP request.</p>
+
+<pre><code>http://myapp/reporting/sales?date=[2013-01-01&amp;date=2013-03-31]&amp;group=state&amp;sort=grossAmount
+</code></pre>
+
+<p>which returns for instance</p>
+
+<pre><code>{
+    total: 3,
+    summary: {
+            grossAmount: 649272.45,
+            saleCount: 81377,
+        },
+    records: [
+        {
+        group: [
+            {
+                _display: "California (CA)",
+                informations: {
+                    Name: "California",
+                    Code: "CA"
+                    }
+                }
+            ],
+        measures: {
+            grossAmount: 64934,
+            saleCount: 9045,
+            }
+        },
+        {
+        group: [
+            {
+                _display: "Texas (TX)",
+                informations: {
+                    Name: "Texas",
+                    Code: "TX"
+                    }
+                }
+            ],
+        measures: {
+            grossAmount: 59334,
+            saleCount: 5045,
+            }
+        },
+        ...
+}
+</code></pre>
+
+<h2>
+<a name="roadmap" class="anchor" href="#roadmap"><span class="octicon octicon-link"></span></a>Roadmap</h2>
+
+<p>Currently Novie is a Java library designed to be integrated into a web application. The main steps currently planned in its roadmap are</p>
+
+<ul>
+<li>Improve the query system
+
+<ul>
+<li>Support filtering on the measures</li>
+<li>Support multiple schema</li>
+<li>Support configuration of visibility of the information (for querying and/or displaying)</li>
+</ul>
+</li>
+<li>Support configuration using XML files</li>
+<li>Support Table/child type schema</li>
+<li>Deliver a standalone webapp, which can be deployed and configured without a line of code</li>
+</ul><h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>Once an endpoint is defined, the user can make a HTTP query to retrieve the data.</p>
+
+<p>Each url is composed of :</p>
+
+<ul>
+<li>The end point which is different for every set of measure</li>
+<li>Set of constraint parameters</li>
+<li>The grouping parameters</li>
+<li>Eventually a set of extra parameters such as: sorting, paging or timezone switching.</li>
+</ul><p><code>http://xxxxx/xxxx/xxx/endPoint?dimension.info=[val1&amp;dimension.info=val2&amp;dimension2.info1=val3&amp;group=dimension2&amp;sort=-dimension2.info</code></p>
+
+<p>For more details, please read the querying documentation <a href="./docs/querying.md">here</a>.</p>
+
+<h2>
+<a name="development--integration" class="anchor" href="#development--integration"><span class="octicon octicon-link"></span></a>Development &amp; Integration</h2>
+
+<h3>
+<a name="integration-in-a-web-app" class="anchor" href="#integration-in-a-web-app"><span class="octicon octicon-link"></span></a>Integration in a web-app</h3>
+
+<p>Novie is currently designed to be integrated in a Spring web-app and configured using Spring beans.</p>
+
+<p>In the web-app 2 beans must be deploy.</p>
+
+<ul>
+<li>A <code>javax.sql.DataSource</code> named <code>novieDataSource</code>
+</li>
+<li>A <code>com.groupon.novie.SchemasLoader</code> named <code>novieSchemasLoader</code>
+</li>
+</ul><p>The implementation of <code>com.groupon.novie.SchemasLoader</code> is accountable to returns the list of schemas' definitions. The schema definition is represented by the interface <code>com.groupon.novie.SchemaDefinition</code> which have a concrete public implementation <code>com.groupon.novie.utils.SchemaDefinitionImpl</code> which can be used.
+Each schema definition contains:</p>
+
+<ul>
+<li>The definition of the fact table and its measures.</li>
+<li>The definition of the dimensions and their informations.</li>
+<li>The definition of the relations between the fact table and the dimensions and between the dimensions in the case of a snowflake schema.</li>
+<li>The virtual dimension that can be substituted depending on the Timezone.</li>
+</ul><p>In the web.xml, the specific servlet must be configured and mapped.</p>
+
+<pre><code>&lt;servlet&gt;
+    &lt;servlet-name&gt;novie&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;contextClass&lt;/param-name&gt;
+        &lt;param-value&gt;
+            org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+        &lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+        &lt;param-value&gt;com.groupon.novie.NovieConfig&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+</code></pre>
+
+<h3>
+<a name="development-environment" class="anchor" href="#development-environment"><span class="octicon octicon-link"></span></a>Development environment</h3>
+
+<p>To build Novie simply run <code>mvn clean install</code></p>
+
+<p>To run the integration tests (see below), run <code>run clean verify -Pintegration-test</code></p>
+
+<h4>
+<a name="developement-of-novie-core" class="anchor" href="#developement-of-novie-core"><span class="octicon octicon-link"></span></a>Developement of Novie-core</h4>
+
+<p>A special maven profile <code>dev-web</code> is configured. This will allow you to deploy run a simple web-app which contains one end-point base on a hsqldb DB. In a near future, this database will also be used for automated tests.</p>
+
+<p>A set of junit test are also present (test coverage will improve in subsequent releases).</p>
+
+<p><strong>Tip:</strong>
+In eclipse, in order to deploy the project, you have to:</p>
+
+<ul>
+<li>enable the "Dynamic Web Module" project facet.</li>
+<li>configure <code>src/dev/java</code> and <code>src/dev/resources</code> to be part of the build path.</li>
+<li>configure the <code>Deployment Assembly</code> to include the <code>dev/</code> folders.</li>
+</ul><p><img src="./docs/eclipse_buildPath.png" alt="alt text" title="Build Path"></p>
+
+<p><em>"Build path" configuration</em></p>
+
+<p><img src="./docs/eclipse_deploymentAssembly.png" alt="alt text" title="Deployment Assembly"></p>
+
+<p><em>"Deployment Assembly" configuration</em></p>
+
+<p><strong>Tip</strong>
+In IntelliJ, just select the profile <code>dev-web</code> and deploy it in tomcat.</p>
+
+<h4>
+<a name="developement-of-novie-qa" class="anchor" href="#developement-of-novie-qa"><span class="octicon octicon-link"></span></a>Developement of Novie-qa</h4>
+
+<p><code>Novie-qa</code>is a module which includes all the integration tests using <a href="http://cukes.info/">cucumber</a>. The special
+maven profile <code>integration-test</code> start a HSQLDB server, a tomcat server and deploy inside a simple webapp which
+configure the Novie to use a test start-schema.</p>
+
+<p>To develop new integration test, the easiest way is to simulate the mvn environment. To help
+with that a "Main" class <code>com.groupon.novie.integrationtest.DebugHSQLDB</code> is provided. This class starts a HSQLDB server
+and runs the SQL script to create the schema. To test/develop the integration test you must:</p>
+
+<ul>
+<li>Run com.groupon.novie.integrationtest.DebugHSQLDB</li>
+<li>Run a tomcat server, on port 9090, with the "test app", provided by the profile <code>integration-test</code> deployed. It works exactly as for the development environment.</li>
+</ul><h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>This project is under BSD 3-Clause license</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Novie maintained by <a href="https://github.com/groupon">groupon</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
