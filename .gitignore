@@ -1,0 +1,24 @@
+#Standard Eclipse files
+.project
+.classpath
+.settings
+
+#Standard IntelliJ files
+.idea
+*.iml
+atlassian-ide-plugin.xml
+
+#Standard Maven files
+target
+
+#Testlink generated files
+test-output
+
+#Normally ignored files
+*.log
+logs
+ignore-*
+*.ignore
+*.tmp
+*~
+
