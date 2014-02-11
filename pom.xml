@@ -22,8 +22,16 @@
 
 	<organization>
 		<name>Groupon</name>
-		<url>http://www.groupon.com</url>
+		<url>http://groupon.github.com</url>
 	</organization>
+
+    <licenses>
+        <license>
+            <name>BSD 3-Clause</name>
+            <url>http://opensource.org/licenses/BSD-3-Clause</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
 	<developers>
 		<developer>
