@@ -34,6 +34,7 @@ package com.groupon.novie.dev.config;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.groupon.novie.internal.exception.NovieException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,7 @@ public class TestSchemasLoaderConfig implements SchemasLoader {
     }
 
     @Override
-    public Collection<SchemaDefinition> loadSchemasConfig() throws Exception {
+    public Collection<SchemaDefinition> loadSchemasConfig() throws NovieException {
         return configs;
     }
 

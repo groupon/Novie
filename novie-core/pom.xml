@@ -11,7 +11,7 @@
 
 	<name>Novie core library</name>
 
-	<packaging>${packaging.type}</packaging>
+	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
@@ -93,9 +93,6 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-			<properties>
-				<packaging.type>jar</packaging.type>
-			</properties>
 		</profile>
 		<profile>
 			<id>dev-web</id>
@@ -103,7 +100,6 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<packaging.type>war</packaging.type>
 				<source.dir>${basedir}/src/dev/java</source.dir>
 			</properties>
 			<dependencies>
