@@ -38,6 +38,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.groupon.novie.internal.validation.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,12 +62,6 @@ import com.groupon.novie.internal.exception.InvalidSchemaException;
 import com.groupon.novie.internal.exception.ServiceException;
 import com.groupon.novie.internal.response.Report;
 import com.groupon.novie.internal.response.ReportRecord;
-import com.groupon.novie.internal.validation.HttpQueryConstraint;
-import com.groupon.novie.internal.validation.PageNumberConstraint;
-import com.groupon.novie.internal.validation.PageSizeConstraint;
-import com.groupon.novie.internal.validation.QueryParameterAware;
-import com.groupon.novie.internal.validation.QueryParameterEnvelope;
-import com.groupon.novie.internal.validation.SystemParameter;
 
 /**
  * <p>
@@ -241,7 +236,7 @@ public class ApiController {
 
             if (DOMAIN_PARAMETERS.contains(key)) {
                 String domainParameter = params.get(key)[0];
-                final SystemParameter systemParameter = SystemParameter.valueOf(key);
+                final DomainParserAware systemParameter = SystemParameter.valueOf(key);
                 systemParameter.parseValue(domainParameter, config, queryParameterDto);
 
             } else {
