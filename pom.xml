@@ -70,13 +70,13 @@
 				<role>QA</role>
 			</roles>
 		</developer>
-        <developer>
-            <name>Karim Nabil</name>
-            <email>nablik@groupon.com</email>
-            <roles>
-                <role>Automation Test Advisor</role>
-            </roles>
-        </developer>
+	        <developer>
+	            <name>Karim Nabli</name>
+	            <email>nablik@groupon.com</email>
+	            <roles>
+	                <role>Automation Test Advisor</role>
+	            </roles>
+	        </developer>
 	</developers>
 
 	<properties>
